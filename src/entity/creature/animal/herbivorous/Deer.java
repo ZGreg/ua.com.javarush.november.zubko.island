@@ -5,7 +5,7 @@ import java.util.Map;
 public class Deer extends Herbivorous{
 
 
-    public Deer(double weight, double satiety, int speed, Map<String, Integer> eatenThings) {
-        super(weight, satiety, speed, eatenThings);
+    public Deer(double weight, double satiety, int speed) {
+        super(weight, satiety, speed);
     }
 }

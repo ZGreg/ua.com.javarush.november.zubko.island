@@ -3,7 +3,7 @@ package entity.location;
 public final class Island {
 
     private static Island instance;
-    private final Location[][] island = new Location[100][20];
+    private final Location[][] island = new Location[20][100];
 
     private Island() {
     }
