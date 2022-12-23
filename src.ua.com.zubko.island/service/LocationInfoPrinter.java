@@ -1,4 +1,4 @@
-package repository;
+package service;
 
 import entity.creature.animal.Animal;
 import entity.location.Location;

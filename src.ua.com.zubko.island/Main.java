@@ -1,11 +1,3 @@
-import entity.creature.animal.Animal;
-import entity.creature.animal.herbivorous.Duck;
-import entity.location.Island;
-import entity.location.Location;
-import repository.LocationInfoPrinter;
-
-import java.util.List;
-
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException {
