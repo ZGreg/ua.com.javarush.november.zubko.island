@@ -14,12 +14,9 @@ public class LocationInfoPrinter {
 
 
     public  void printLocationInfo(Location location){
-
         printCurrentAmtOfPlants(location);
         System.out.println("<=>".repeat(25));
         printCurrentAmtOfAnimals(location);
-        //printHuntedAnimals
-        //printEatenPlants
     }
 
     private  void printCurrentAmtOfPlants(Location location) {

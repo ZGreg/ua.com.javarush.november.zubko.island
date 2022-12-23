@@ -25,8 +25,6 @@ public class Location {
 
     public Location(int id, int row) {
         this.id = id;
-      //  this.x = x;
-      //  this.y = y;
         this.row = row;
         settleAnimals();
         settlePlants();
@@ -34,13 +32,13 @@ public class Location {
 
 
     private void settlePlants(){
-     //   int randomAmount = Randomizer.getRndNum(1, Plant.MAX_AMOUNT_OF_PLANT + 1);
+        int randomAmount = Randomizer.getRndNum(1, Plant.MAX_AMOUNT_OF_PLANT + 1);
         for (int i = 0; i < 6; i++) {
             plants.add(new Plant());
         }
     }
 
-    private void settleAnimals(){  //take values from json through Setting class
+    private void settleAnimals(){
        Deque<Animal> container = new LinkedList<>();
         for(AnimalSpecies species : AnimalSpecies.values()){
             int maxAmtOfAnimal = Randomizer.getRndNum(1,species.getMaxAmountOfAnimal() + 1);
@@ -61,18 +59,6 @@ public class Location {
         return animals;
     }
 
-//   // public int getPlantsAmt() {
-//        return livingCreature.get("Plant").size();
-//    }
-
-
-//    public int getCoordinateX() {
-//        return x;
-//    }
-
-//    public int getCoordinateY() {
-//        return y;
-//    }
     public int getRow() {
         return row;
     }
