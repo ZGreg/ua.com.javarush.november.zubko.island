@@ -1,20 +1,17 @@
 package repository;
 
-import entity.creature.Nature;
 import entity.creature.animal.Animal;
 import entity.creature.animal.herbivorous.*;
 import entity.creature.animal.predator.*;
 import util.AnimalSpecies;
-
-import java.util.HashMap;
 
 public class AnimalFabric {
 
     private AnimalFabric() {
     }
     // add default error
-    public static Nature createAnimal(AnimalSpecies species){
-        Nature animal = null;
+    public static Animal createAnimal(AnimalSpecies species){
+        Animal animal = null;
         switch (species){
             case FOX -> animal = new Fox(8,2,2);
             case BEAR -> animal = new Bear(500,80,2);

@@ -2,9 +2,9 @@ package util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomMethodsHolder {        //ThrLocRndMethodHolder
+public class Randomizer {        //ThrLocRndMethodHolder
 
-    private RandomMethodsHolder() {
+    private Randomizer() {
     }
 
     public static int getRndNum(int num) {
@@ -13,5 +13,9 @@ public class RandomMethodsHolder {        //ThrLocRndMethodHolder
 
     public static int getRndNum(int from, int num) {
         return ThreadLocalRandom.current().nextInt(from, num);
+    }
+
+    public static boolean flipCoin(){
+        return ThreadLocalRandom.current().nextBoolean();
     }
 }

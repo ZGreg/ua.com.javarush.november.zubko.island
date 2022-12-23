@@ -1,0 +1,15 @@
+1. Remove enum ? Instead of use string?
+2. ConcurrentLinkedDeque
+3. DirectionCounter make non-static?
+4. During creating an object animal should be created map huntChance
+5. Asociate animalFabric in IslandRunner class.
+
+ Boar Duck Mouse
+
+
+
+
+
+
+
+TODO: 1) add exceptions, 2) add constants z.B. "Plant" or 100%
