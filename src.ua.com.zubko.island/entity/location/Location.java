@@ -7,21 +7,18 @@ import util.AnimalSpecies;
 import util.Randomizer;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Location {
 
-    private AnimalFabric animalFabric;
-    private  int id;
+    private AnimalFabric animalFabric;   // what to do ?
+    private final int id;
+    private final int row;
 
-    private int row;
-   // private int x;                //will be i
-   // private int y;                // will be j
+    private final ReentrantLock lock = new ReentrantLock(true);
 
-
-    private Queue<Plant> plants = new LinkedList<>();     //set
-    private Map<String,Deque<Animal>> animals = new HashMap<>();         //set
-
-  //  private final Map<String,List<Nature>> livingCreature = new HashMap<>();    //stack or queue probably better then list
+    private final Queue<Plant> plants = new LinkedList<>();
+    private final Map<String,Queue<Animal>> animals = new HashMap<>();
 
     public Location(int id, int row) {
         this.id = id;
@@ -32,16 +29,16 @@ public class Location {
 
 
     private void settlePlants(){
-        int randomAmount = Randomizer.getRndNum(1, Plant.MAX_AMOUNT_OF_PLANT + 1);
-        for (int i = 0; i < 6; i++) {
+        int randomAmount = Randomizer.getRndNum(2, Plant.MAX_AMOUNT_OF_PLANT);
+        for (int i = 0; i < randomAmount; i++) {
             plants.add(new Plant());
         }
     }
 
     private void settleAnimals(){
-       Deque<Animal> container = new LinkedList<>();
+       Queue<Animal> container = new LinkedList<>();
         for(AnimalSpecies species : AnimalSpecies.values()){
-            int maxAmtOfAnimal = Randomizer.getRndNum(1,species.getMaxAmountOfAnimal() + 1);
+            int maxAmtOfAnimal = Randomizer.getRndNum(2,species.getMaxAmountOfAnimal() + 1);
             while (maxAmtOfAnimal != 0 ) {
                 container.add(AnimalFabric.createAnimal(species));
                 maxAmtOfAnimal--;
@@ -53,9 +50,9 @@ public class Location {
 
     public int getId() {
         return id;
-    }  //delete
+    }
 
-    public Map<String,Deque<Animal>> getAnimals() {
+    public Map<String,Queue<Animal>> getAnimals() {
         return animals;
     }
 
@@ -69,5 +66,9 @@ public class Location {
 
     public int getPlantsAmt(){
         return plants.size();
+    }
+
+    public ReentrantLock getLock() {
+        return lock;
     }
 }

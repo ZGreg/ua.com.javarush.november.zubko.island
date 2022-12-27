@@ -8,15 +8,15 @@ import util.Randomizer;
 
 import java.util.*;
 
-import static util.WorldSettings.ID_MAX_VALUE;
-import static util.WorldSettings.ISLAND_LENGTH;
+import static setings.WorldSettings.ID_MAX_VALUE;
+import static setings.WorldSettings.ISLAND_LENGTH;
 
 public abstract class Animal implements Mortal {
 
-    private double weight;
-    private double satiety;
+    private final double weight;
+    private final double satiety;
     private double currentSatiety;
-    private int speed;
+    private final int speed;
 
     public Animal(double weight, double satiety, int speed) {
         this.weight = weight;
@@ -26,12 +26,6 @@ public abstract class Animal implements Mortal {
 
     public abstract void eat(Location location);
 
-    public void killAnimal(Location location){
-        if(isDead(getCurrentSatiety())){
-            location.getAnimals().get(retrieveName()).remove(this);
-        }
-    }
-
     public String retrieveName() {
         return this.getClass().getSimpleName();
     }
@@ -40,39 +34,73 @@ public abstract class Animal implements Mortal {
         return !(currentSatiety == satiety);
     }
 
-    public void reproduce(Location location) { //----------------------reproduce start
-        Map<String, Deque<Animal>> livingCreature = location.getAnimals();
-        String key = retrieveName();
-
-        if ((livingCreature.containsKey(key)) && (livingCreature.get(key).size() > 1) &&
-                (livingCreature.get(key).size() < AnimalSpecies.valueOf(key.toUpperCase()).getMaxAmountOfAnimal())) {
-
-            boolean isMatingSuccessful = Randomizer.flipCoin();
-
-            if (isMatingSuccessful) {
-                Animal newBorn = AnimalFabric.createAnimal(AnimalSpecies.valueOf(retrieveName().toUpperCase()));
-                livingCreature.get(key).add(newBorn);
+    public void killAnimal(Location location){
+        safeKillAnimal(location);
+    }
+    private void safeKillAnimal(Location location){
+        location.getLock().lock();
+        try{
+            if(isDead(getCurrentSatiety())){
+                location.getAnimals().get(retrieveName()).remove(this);
             }
+        }finally {
+            location.getLock().unlock();
         }
+
     }
 
-    public void move(Location location, Island island) {           //------------------ move  island can give a location
-        boolean wantMove = Randomizer.flipCoin();
+    public void reproduce(Location location){
+        safeReproduce(location);
+    }
+    private void safeReproduce(Location location) { //----------------------reproduce start
+        location.getLock().lock();
+        try {
+            Map<String, Queue<Animal>> livingCreature = location.getAnimals();
+            String key = this.retrieveName();
 
-        if (wantMove) {
-            int speed = getSpeed();
-            int newLocationId = choseDestination(island, location, speed);
+            if ((livingCreature.containsKey(key)) && (livingCreature.get(key).size() > 1) &&
+                    (livingCreature.get(key).size() < AnimalSpecies.valueOf(key.toUpperCase()).getMaxAmountOfAnimal())) {
 
-            Location destination = island.getLocationById(newLocationId);
+                boolean isMatingSuccessful = Randomizer.flipCoin();
 
-            if (destination.getAnimals().get(retrieveName()).size() <
-                    AnimalSpecies.valueOf(retrieveName().toUpperCase()).getMaxAmountOfAnimal()) {
-
-                Animal animal = location.getAnimals().get(retrieveName()).removeLast();
-                animal.setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (getSpeed() * 10)));
-                destination.getAnimals().get(retrieveName()).add(animal);
+                if (isMatingSuccessful) {
+                    Animal newBorn = AnimalFabric.createAnimal(AnimalSpecies.valueOf(retrieveName().toUpperCase()));
+                    livingCreature.get(key).add(newBorn);
+                }
             }
+        }finally {
+            location.getLock().unlock();
         }
+
+    }
+
+
+    public void move(Location location, Island island){
+        safeMove(location,island);
+    }
+    private void safeMove(Location location, Island island) { //------------------ move  island can give a location
+        location.getLock().lock();
+        try {
+           // boolean wantMove = Randomizer.flipCoin();
+
+          //  if (wantMove) {
+                int speed = getSpeed();
+                int newLocationId = choseDestination(island, location, speed);
+
+                Location destination = island.getLocationById(newLocationId);
+
+                if (destination.getAnimals().get(retrieveName()).size() <
+                        AnimalSpecies.valueOf(retrieveName().toUpperCase()).getMaxAmountOfAnimal()) {
+
+                    location.getAnimals().get(retrieveName()).remove(this);
+                    setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (getSpeed() * 10)));
+                    destination.getAnimals().get(retrieveName()).add(this);
+                }
+         //   }
+        }finally {
+            location.getLock().unlock();
+        }
+
     }
 
     /**

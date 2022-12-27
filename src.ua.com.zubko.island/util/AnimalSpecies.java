@@ -5,7 +5,7 @@ import entity.creature.animal.predator.*;
 
 public enum AnimalSpecies {
     BEAR(5, Bear.class.getSimpleName()),
-    BOA_CONSTRICTOR(30, BoaConstrictor.class.getSimpleName()),
+    BOACONSTRICTOR(30, BoaConstrictor.class.getSimpleName()),
     EAGLE(20, Eagle.class.getSimpleName()),
     FOX(30, Fox.class.getSimpleName()),
     WOLF(30, Wolf.class.getSimpleName()),
@@ -20,8 +20,8 @@ public enum AnimalSpecies {
     SHEEP(140,Sheep.class.getSimpleName()),
     WILDBOAR(50,WildBoar.class.getSimpleName());
 
-    private int maxAmtOfAnimal;
-    private String name;
+    private final int maxAmtOfAnimal;
+    private final String name;
     AnimalSpecies(int maxAmtOfAnimal, String name){
         this.maxAmtOfAnimal = maxAmtOfAnimal;
         this.name = name;

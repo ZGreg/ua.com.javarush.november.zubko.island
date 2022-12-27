@@ -8,6 +8,8 @@ import util.Randomizer;
 
 import java.util.*;
 
+import static setings.WorldSettings.PLANT;
+
 public class Mouse extends Herbivorous {
 
     public Mouse(double weight, double satiety, int speed) {
@@ -16,34 +18,43 @@ public class Mouse extends Herbivorous {
 
     @Override
     public void eat(Location location) {
+        safeEat(location);
+    }
 
-        if (this.isHungry()) {
+    private void safeEat(Location location) {
+        location.getLock().lock();
+        try {
+            if (this.isHungry()) {
 
-            Queue<Plant> plants = location.getPlants();
-            Map<String, Deque<Animal>> animals = location.getAnimals();
+                Queue<Plant> plants = location.getPlants();
+                Map<String, Queue<Animal>> animals = location.getAnimals();
 
-            Map<String, Integer> huntChance = getRndPray();
-            String preyName = (String) huntChance.keySet().toArray()[0];
-            int attempt = Randomizer.getRndNum(2, 5);
+                Map<String, Integer> huntChance = getRndPray();
+                String preyName = (String) huntChance.keySet().toArray()[0];
+                int attempt = Randomizer.getRndNum(2, 5);
 
-            if (preyName.equals("Plant") && !(plants.isEmpty())) {
-                while ((attempt >= 0) && (isHungry())) {
-                    Plant eatenPlant = plants.remove();
-                    eatPlant(this, eatenPlant);
-                    attempt--;
-                }
-            } else if ((animals.containsKey(preyName)) && animals.get(preyName).size() != 0) {
-
-                Animal prey = animals.get(preyName).peek();
-
-                if (isHuntSuccessful(huntChance.get(preyName), prey)) {
+                if (preyName.equals(PLANT)) {
                     while ((attempt >= 0) && (isHungry())) {
-                        animals.get(preyName).remove();
+                        if (plants.size() != 0) {
+                            Plant eatenPlant = plants.remove();
+                            eatPlant(this, eatenPlant);
+                        }
                         attempt--;
                     }
+                } else if ((animals.containsKey(preyName)) && animals.get(preyName).size() != 0) {
 
+                    Animal prey = animals.get(preyName).peek();
+
+                    while ((attempt >= 0) && (isHungry())) {
+                        if (isHuntSuccessful(huntChance.get(preyName), prey)) {
+                            animals.get(preyName).remove();
+                        }
+                        attempt--;
+                    }
                 }
             }
+        } finally {
+            location.getLock().unlock();
         }
     }
 

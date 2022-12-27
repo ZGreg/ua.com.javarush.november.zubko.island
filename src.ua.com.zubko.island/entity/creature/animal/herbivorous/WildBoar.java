@@ -8,7 +8,9 @@ import util.Randomizer;
 
 import java.util.*;
 
-public class WildBoar extends Herbivorous{
+import static setings.WorldSettings.PLANT;
+
+public class WildBoar extends Herbivorous {
 
     public WildBoar(double weight, double satiety, int speed) {
         super(weight, satiety, speed);
@@ -16,37 +18,43 @@ public class WildBoar extends Herbivorous{
 
     @Override
     public void eat(Location location) {
+        safeEat(location);
+    }
 
-        if (this.isHungry()) {
+    private void safeEat(Location location) {
+        location.getLock().lock();
+        try {
+            if (this.isHungry()) {
 
-            Queue<Plant> plants = location.getPlants();
-            Map<String, Deque<Animal>> animals = location.getAnimals();
+                Queue<Plant> plants = location.getPlants();
+                Map<String, Queue<Animal>> animals = location.getAnimals();
 
-            Map<String, Integer> huntChance = getRndPray();
-            String preyName = (String) huntChance.keySet().toArray()[0];
-            int attempt = Randomizer.getRndNum(2,5);
-            try {
-                if (preyName.equals("Plant") && !(plants.isEmpty())) {
+                Map<String, Integer> huntChance = getRndPray();
+                String preyName = (String) huntChance.keySet().toArray()[0];
+                int attempt = Randomizer.getRndNum(2, 5);
+
+                if (preyName.equals(PLANT)) {
                     while ((attempt >= 0) && (isHungry())) {
-                        Plant eatenPlant = plants.remove();
-                        eatPlant(this, eatenPlant);
+                        if (plants.size() != 0) {
+                            Plant eatenPlant = plants.remove();
+                            eatPlant(this, eatenPlant);
+                        }
                         attempt--;
                     }
                 } else if ((animals.containsKey(preyName)) && animals.get(preyName).size() != 0) {
 
                     Animal prey = animals.get(preyName).peek();
 
-                    if (isHuntSuccessful(huntChance.get(preyName), prey)) {
-                        while ((attempt >= 0) && (isHungry())){
-                            animals.get(preyName).remove();
-                            attempt--;
+                    while ((attempt >= 0) && (isHungry())) {
+                        if (isHuntSuccessful(huntChance.get(preyName), prey)) {
+                            animals.get(preyName).remove(this);
                         }
-
+                        attempt--;
                     }
                 }
-            }catch (NullPointerException e){
-                System.out.println("Unknown type of animal");
             }
+        } finally {
+            location.getLock().unlock();
         }
     }
 

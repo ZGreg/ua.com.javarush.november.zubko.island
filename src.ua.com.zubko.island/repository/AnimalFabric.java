@@ -27,7 +27,7 @@ public class AnimalFabric {
             case BUFFALO -> animal = new Buffalo(700,100,3);
             case WILDBOAR -> animal = new WildBoar(400,50,2);
             case CATERPILLAR -> animal = new Caterpillar(0.01,0,0);
-            case BOA_CONSTRICTOR -> animal = new BoaConstrictor(15,3,1);
+            case BOACONSTRICTOR -> animal = new BoaConstrictor(15,3,1);
             default -> throw new RuntimeException();
         }
         return animal;

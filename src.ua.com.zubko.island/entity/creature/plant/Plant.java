@@ -14,17 +14,25 @@ public class Plant {
         this.weight = 1;
     }
 
-    public void growPlant(Location location) {
-        int currentAmtPlants = location.getPlantsAmt();
+    public void growPlant(Location location){
+        safeGrowPlant(location);
+    }
 
-        if (currentAmtPlants == MAX_AMOUNT_OF_PLANT) {
-            return;
-        }
+    private void safeGrowPlant(Location location) {
+        location.getLock().lock();
+        try{int currentAmtPlants = location.getPlantsAmt();
 
-        int newPlants = Randomizer.getRndNum(1,5);
+            if (currentAmtPlants >= MAX_AMOUNT_OF_PLANT) {
+                return;
+            }
 
-        for (int i = 0; i < newPlants; i++) {
-            location.getPlants().add(new Plant());
+            int newPlants = Randomizer.getRndNum(1,5);
+
+            for (int i = 0; i < newPlants; i++) {
+                location.getPlants().add(new Plant());
+            }
+        }finally {
+            location.getLock().unlock();
         }
     }
 

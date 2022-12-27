@@ -4,11 +4,11 @@ package entity.location;
 import java.util.ArrayList;
 import java.util.List;
 
-import static util.WorldSettings.ID_MAX_VALUE;
-import static util.WorldSettings.ISLAND_LENGTH;
+import static setings.WorldSettings.ID_MAX_VALUE;
+import static setings.WorldSettings.ISLAND_LENGTH;
 
 public class Island {
-    private List<Location> island = new ArrayList<>(ID_MAX_VALUE);
+    private final List<Location> island = new ArrayList<>(ID_MAX_VALUE);
 
     public Island() {
         initIsland();
