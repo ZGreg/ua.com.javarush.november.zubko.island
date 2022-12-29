@@ -6,7 +6,10 @@ import repository.AnimalFabric;
 import util.AnimalSpecies;
 import util.Randomizer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 import static setings.WorldSettings.ID_MAX_VALUE;
 import static setings.WorldSettings.ISLAND_LENGTH;
@@ -34,24 +37,26 @@ public abstract class Animal implements Mortal {
         return !(currentSatiety == satiety);
     }
 
-    public void killAnimal(Location location){
+    public void killAnimal(Location location) {
         safeKillAnimal(location);
     }
-    private void safeKillAnimal(Location location){
+
+    private void safeKillAnimal(Location location) {
         location.getLock().lock();
-        try{
-            if(isDead(getCurrentSatiety())){
+        try {
+            if (isDead(getCurrentSatiety())) {
                 location.getAnimals().get(retrieveName()).remove(this);
             }
-        }finally {
+        } finally {
             location.getLock().unlock();
         }
 
     }
 
-    public void reproduce(Location location){
+    public void reproduce(Location location) {
         safeReproduce(location);
     }
+
     private void safeReproduce(Location location) { //----------------------reproduce start
         location.getLock().lock();
         try {
@@ -68,90 +73,79 @@ public abstract class Animal implements Mortal {
                     livingCreature.get(key).add(newBorn);
                 }
             }
-        }finally {
+        } finally {
             location.getLock().unlock();
         }
 
     }
 
 
-    public void move(Location location, Island island){
-        safeMove(location,island);
+    public void move(Location location, Island island) {
+        safeMove(location, island);
     }
-    private void safeMove(Location location, Island island) { //------------------ move  island can give a location
+
+    private void safeMove(Location location, Island island) {
         location.getLock().lock();
         try {
-           // boolean wantMove = Randomizer.flipCoin();
 
-          //  if (wantMove) {
-                int speed = getSpeed();
-                int newLocationId = choseDestination(island, location, speed);
+            int speed = getSpeed();
+            int newLocationId = choseDestination(location,island);
 
-                Location destination = island.getLocationById(newLocationId);
+            Location destination = island.getLocationById(newLocationId);
 
-                if (destination.getAnimals().get(retrieveName()).size() <
-                        AnimalSpecies.valueOf(retrieveName().toUpperCase()).getMaxAmountOfAnimal()) {
+            if (destination.getAnimals().get(retrieveName()).size() <
+                    AnimalSpecies.valueOf(retrieveName().toUpperCase()).getMaxAmountOfAnimal()) {
 
-                    location.getAnimals().get(retrieveName()).remove(this);
-                    setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (getSpeed() * 10)));
-                    destination.getAnimals().get(retrieveName()).add(this);
-                }
-         //   }
-        }finally {
+                location.getAnimals().get(retrieveName()).remove(this);
+                setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (speed * 10)));
+                destination.getAnimals().get(retrieveName()).add(this);
+            }
+
+        } finally {
             location.getLock().unlock();
         }
 
     }
 
-    /**
-     * Animals move only in for directions. The distance of moving equals animal speed value.
-     */
-    private int choseDestination(Island island, Location location, int speed) {
+    private int choseDestination(Location location, Island island) {
+
         boolean coordinateDirection = Randomizer.flipCoin();
         int id = location.getId();
+        int speed = getSpeed();
 
-        if (coordinateDirection) {
-            // X coordinate
-            int left = id - speed;
-            int right = id + speed;
+        List<Integer> locationsToGo = new ArrayList<>();
 
-            List<Integer> integers = new ArrayList<>();
+            if (coordinateDirection) {
+                // X coordinate
+                int left = id - speed;
+                int right = id + speed;
 
-            if ((left > 0) && (location.getRow() == island.getLocationById(left).getRow())) {
-                integers.add(left);
-            }
-
-            if ((right < ID_MAX_VALUE) && (location.getRow() == island.getLocationById(right).getRow())) {
-                integers.add(right);
-            }
-
-            if (integers.size() == 1) {                   //isEmpty()
-                return integers.get(0);
+                //
+                if ((left > 0) && (location.getRow() == island.getLocationById(left).getRow())) {
+                    locationsToGo.add(left);
+                }
+                if ((right < ID_MAX_VALUE)&& (location.getRow() == island.getLocationById(right).getRow())) {
+                    locationsToGo.add(right);
+                }
             } else {
-                return integers.get(Randomizer.getRndNum(0, 2));
+                // Y coordinate
+                int up = id - (speed * ISLAND_LENGTH);
+                int down = id + (speed * ISLAND_LENGTH);
+
+
+                if (up > 0) {
+                    locationsToGo.add(up);
+                }
+
+                if (down < ID_MAX_VALUE) {
+                    locationsToGo.add(down);
+                }
             }
 
+        if (locationsToGo.size() == 1) {   //if size 0
+            return locationsToGo.get(0);
         } else {
-            // Y coordinate
-            int up = id - (speed * ISLAND_LENGTH);
-            ;
-            int down = id + (speed * ISLAND_LENGTH);
-
-            List<Integer> integers = new ArrayList<>();
-
-            if (up > 0) {
-                integers.add(up);
-            }
-
-            if (down < ID_MAX_VALUE) {
-                integers.add(down);
-            }
-
-            if (integers.size() == 1) {                   //isEmpty()
-                return integers.get(0);
-            } else {
-                return integers.get(Randomizer.getRndNum(0, 2));
-            }
+            return locationsToGo.get(Randomizer.getRndNum(0, 2));
         }
     }
 

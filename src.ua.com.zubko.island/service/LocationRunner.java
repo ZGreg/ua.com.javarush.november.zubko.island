@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class LocationRunner {
 
     private final int coreSize = 4;
-    private final int worldDuration = 7000;
-    private final int period = 1000;
+    private final int worldDuration = 14000;
+    private final int period = 4500;
 
     private final Island island;
 
@@ -51,7 +51,7 @@ public class LocationRunner {
             plantService.scheduleWithFixedDelay(new PlantRunner(location),period,period, TimeUnit.MICROSECONDS);
         }
 
-        statisticService.scheduleAtFixedRate(new StatisticRunner(island),2,2,TimeUnit.SECONDS);
+        statisticService.scheduleAtFixedRate(new StatisticRunner(island),0,5,TimeUnit.MILLISECONDS);
     }
 
 }

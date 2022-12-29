@@ -20,7 +20,8 @@ public class Plant {
 
     private void safeGrowPlant(Location location) {
         location.getLock().lock();
-        try{int currentAmtPlants = location.getPlantsAmt();
+        try{
+            int currentAmtPlants = location.getPlantsAmt();
 
             if (currentAmtPlants >= MAX_AMOUNT_OF_PLANT) {
                 return;

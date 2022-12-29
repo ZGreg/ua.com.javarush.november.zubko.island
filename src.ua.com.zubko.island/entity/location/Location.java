@@ -18,7 +18,7 @@ public class Location {
     private final ReentrantLock lock = new ReentrantLock(true);
 
     private final Queue<Plant> plants = new LinkedList<>();
-    private final Map<String,Queue<Animal>> animals = new HashMap<>();
+    private final Map<String,Queue<Animal>> animals = new HashMap<>(); //list
 
     public Location(int id, int row) {
         this.id = id;
