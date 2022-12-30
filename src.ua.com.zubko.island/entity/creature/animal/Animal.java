@@ -2,10 +2,11 @@ package entity.creature.animal;
 
 import entity.location.Island;
 import entity.location.Location;
+import lombok.Getter;
+import lombok.Setter;
 import repository.AnimalFactory;
 import util.AnimalSpecies;
 import util.Randomizer;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,14 @@ import static seting.WorldSettings.ID_MAX_VALUE;
 import static seting.WorldSettings.ISLAND_LENGTH;
 
 public abstract class Animal implements Mortal {
-
+    @Getter
     private final double weight;
+    @Getter
     private final double satiety;
+    @Getter
+    @Setter
     private double currentSatiety;
+    @Getter
     private final int speed;
 
     public Animal(double weight, double satiety, int speed) {
@@ -92,7 +97,7 @@ public abstract class Animal implements Mortal {
         try {
 
             int animalSpeed = getSpeed();
-            int newLocationId = choseDestination(location,island);
+            int newLocationId = choseDestination(location, island);
 
             Location destination = island.getLocationById(newLocationId);
 
@@ -118,35 +123,35 @@ public abstract class Animal implements Mortal {
 
         List<Integer> locationsToGo = new ArrayList<>();
 
-            while (locationsToGo.isEmpty()) {
-                if (coordinateDirection) {
-                    // X coordinate
-                    int leftDirection = id - animalSpeed;
-                    int rightDirection = id + animalSpeed;
+        while (locationsToGo.isEmpty()) {
+            if (coordinateDirection) {
+                // X coordinate
+                int leftDirection = id - animalSpeed;
+                int rightDirection = id + animalSpeed;
 
-                    //
-                    if ((leftDirection > 0) && (location.getRow() == island.getLocationById(leftDirection).getRow())) {
-                        locationsToGo.add(leftDirection);
-                    }
-                    if ((rightDirection < ID_MAX_VALUE) && (location.getRow() == island.getLocationById(rightDirection).getRow())) {
-                        locationsToGo.add(rightDirection);
-                    }
-                } else {
-                    // Y coordinate
-                    int upDirection = id - (animalSpeed * ISLAND_LENGTH);
-                    int downDirection = id + (animalSpeed * ISLAND_LENGTH);
-
-
-                    if (upDirection > 0) {
-                        locationsToGo.add(upDirection);
-                    }
-
-                    if (downDirection < ID_MAX_VALUE) {
-                        locationsToGo.add(downDirection);
-                    }
+                //
+                if ((leftDirection > 0) && (location.getRow() == island.getLocationById(leftDirection).getRow())) {
+                    locationsToGo.add(leftDirection);
                 }
-                animalSpeed--;
+                if ((rightDirection < ID_MAX_VALUE) && (location.getRow() == island.getLocationById(rightDirection).getRow())) {
+                    locationsToGo.add(rightDirection);
+                }
+            } else {
+                // Y coordinate
+                int upDirection = id - (animalSpeed * ISLAND_LENGTH);
+                int downDirection = id + (animalSpeed * ISLAND_LENGTH);
+
+
+                if (upDirection > 0) {
+                    locationsToGo.add(upDirection);
+                }
+
+                if (downDirection < ID_MAX_VALUE) {
+                    locationsToGo.add(downDirection);
+                }
             }
+            animalSpeed--;
+        }
 
         if (locationsToGo.size() == 1) {
             return locationsToGo.get(0);
@@ -154,27 +159,5 @@ public abstract class Animal implements Mortal {
             return locationsToGo.get(Randomizer.getRndNum(0, 2));
         }
     }
-
-
-    public double getCurrentSatiety() {
-        return currentSatiety;
-    }
-
-    public void setCurrentSatiety(double currentSatiety) {
-        this.currentSatiety = currentSatiety;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public double getSatiety() {
-        return satiety;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
 
 }

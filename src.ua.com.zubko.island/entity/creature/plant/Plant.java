@@ -2,6 +2,7 @@ package entity.creature.plant;
 
 
 import entity.location.Location;
+import lombok.Getter;
 import util.Randomizer;
 
 
@@ -10,6 +11,7 @@ public class Plant {
     public static final String PLANT_STRING = "Plant";
     public static final String PLANT_ICON = "\uD83C\uDF3F";
     public static final int MAX_AMOUNT_OF_PLANT = 200;
+    @Getter
     private final int weight;
 
     public Plant() {
@@ -38,10 +40,4 @@ public class Plant {
             location.getLock().unlock();
         }
     }
-
-    public double getWeight() {
-        return weight;
-    }
-
-
 }

@@ -3,6 +3,7 @@ package entity.location;
 
 
 
+import lombok.Getter;
 import seting.WorldSettings;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import static seting.WorldSettings.ISLAND_LENGTH;
 
 public class Island {
 
+    @Getter
     private final List<Location> locations = new ArrayList<>(WorldSettings.ID_MAX_VALUE);
 
     public Island() {
@@ -33,10 +35,6 @@ public class Island {
             counter++;
         }
 
-    }
-
-    public List<Location> getLocations() {
-        return locations;
     }
 
     public Location getLocationById(Integer id) {

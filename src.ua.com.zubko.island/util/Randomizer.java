@@ -6,7 +6,6 @@ public class Randomizer {
 
     private Randomizer() {
     }
-
     public static int getRndNum(int num) {
         return ThreadLocalRandom.current().nextInt(num);
     }

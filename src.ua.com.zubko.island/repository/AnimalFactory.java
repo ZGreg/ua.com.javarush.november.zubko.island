@@ -12,7 +12,7 @@ public class AnimalFactory {
     }
 
     public static Animal createAnimal(AnimalSpecies species){
-        Animal animal = null;
+        Animal animal;
         switch (species){
             case FOX -> animal = new Fox(8,2,2);
             case BEAR -> animal = new Bear(500,80,2);
