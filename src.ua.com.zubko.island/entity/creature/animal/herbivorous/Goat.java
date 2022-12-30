@@ -1,7 +1,5 @@
 package entity.creature.animal.herbivorous;
 
-import java.util.Map;
-
 public class Goat extends Herbivorous {
 
 

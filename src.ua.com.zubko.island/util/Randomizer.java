@@ -2,7 +2,7 @@ package util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Randomizer {        //ThrLocRndMethodHolder
+public class Randomizer {
 
     private Randomizer() {
     }

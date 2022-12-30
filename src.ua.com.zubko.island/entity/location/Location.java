@@ -2,7 +2,7 @@ package entity.location;
 
 import entity.creature.animal.Animal;
 import entity.creature.plant.Plant;
-import repository.AnimalFabric;
+import repository.AnimalFactory;
 import util.AnimalSpecies;
 import util.Randomizer;
 
@@ -11,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Location {
 
-    private AnimalFabric animalFabric;   // what to do ?
     private final int id;
     private final int row;
 
@@ -40,7 +39,7 @@ public class Location {
         for(AnimalSpecies species : AnimalSpecies.values()){
             int maxAmtOfAnimal = Randomizer.getRndNum(2,species.getMaxAmountOfAnimal() + 1);
             while (maxAmtOfAnimal != 0 ) {
-                container.add(AnimalFabric.createAnimal(species));
+                container.add(AnimalFactory.createAnimal(species));
                 maxAmtOfAnimal--;
             }
             animals.put(species.getProperName(), container);

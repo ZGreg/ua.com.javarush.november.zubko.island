@@ -4,8 +4,6 @@ import entity.creature.animal.Animal;
 import entity.location.Island;
 import entity.location.Location;
 
-import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

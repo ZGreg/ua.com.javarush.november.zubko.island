@@ -1,6 +1,6 @@
 package entity.creature.animal.predator;
 
-import java.util.Map;
+
 
 public class Bear extends Predator{
 

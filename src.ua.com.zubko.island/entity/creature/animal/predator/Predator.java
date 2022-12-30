@@ -61,7 +61,7 @@ abstract public class Predator extends Animal {
     }
 
     private Map<String, Integer> getRndPray() {
-        Map<String, Integer> huntChance = JsonAnimalHuntChanceReader.getHuntingChanceMap(retrieveName());
+        Map<String, Integer> huntChance = JsonAnimalHuntChanceReader.getHuntingChanceMap(getName());
 
         List<String> prayName = new ArrayList<>(huntChance.keySet());
         int rndNum = Randomizer.getRndNum(prayName.size());

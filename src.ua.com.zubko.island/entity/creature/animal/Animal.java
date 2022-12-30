@@ -2,17 +2,18 @@ package entity.creature.animal;
 
 import entity.location.Island;
 import entity.location.Location;
-import repository.AnimalFabric;
+import repository.AnimalFactory;
 import util.AnimalSpecies;
 import util.Randomizer;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import static setings.WorldSettings.ID_MAX_VALUE;
-import static setings.WorldSettings.ISLAND_LENGTH;
+import static seting.WorldSettings.ID_MAX_VALUE;
+import static seting.WorldSettings.ISLAND_LENGTH;
 
 public abstract class Animal implements Mortal {
 
@@ -29,7 +30,7 @@ public abstract class Animal implements Mortal {
 
     public abstract void eat(Location location);
 
-    public String retrieveName() {
+    public String getName() {
         return this.getClass().getSimpleName();
     }
 
@@ -45,7 +46,7 @@ public abstract class Animal implements Mortal {
         location.getLock().lock();
         try {
             if (isDead(getCurrentSatiety())) {
-                location.getAnimals().get(retrieveName()).remove(this);
+                location.getAnimals().get(getName()).remove(this);
             }
         } finally {
             location.getLock().unlock();
@@ -57,11 +58,11 @@ public abstract class Animal implements Mortal {
         safeReproduce(location);
     }
 
-    private void safeReproduce(Location location) { //----------------------reproduce start
+    private void safeReproduce(Location location) {
         location.getLock().lock();
         try {
             Map<String, Queue<Animal>> livingCreature = location.getAnimals();
-            String key = this.retrieveName();
+            String key = this.getName();
 
             if ((livingCreature.containsKey(key)) && (livingCreature.get(key).size() > 1) &&
                     (livingCreature.get(key).size() < AnimalSpecies.valueOf(key.toUpperCase()).getMaxAmountOfAnimal())) {
@@ -69,7 +70,7 @@ public abstract class Animal implements Mortal {
                 boolean isMatingSuccessful = Randomizer.flipCoin();
 
                 if (isMatingSuccessful) {
-                    Animal newBorn = AnimalFabric.createAnimal(AnimalSpecies.valueOf(retrieveName().toUpperCase()));
+                    Animal newBorn = AnimalFactory.createAnimal(AnimalSpecies.valueOf(getName().toUpperCase()));
                     livingCreature.get(key).add(newBorn);
                 }
             }
@@ -86,21 +87,22 @@ public abstract class Animal implements Mortal {
 
     private void safeMove(Location location, Island island) {
         location.getLock().lock();
+
+
         try {
 
-            int speed = getSpeed();
+            int animalSpeed = getSpeed();
             int newLocationId = choseDestination(location,island);
 
             Location destination = island.getLocationById(newLocationId);
 
-            if (destination.getAnimals().get(retrieveName()).size() <
-                    AnimalSpecies.valueOf(retrieveName().toUpperCase()).getMaxAmountOfAnimal()) {
+            if (destination.getAnimals().get(getName()).size() <
+                    AnimalSpecies.valueOf(getName().toUpperCase()).getMaxAmountOfAnimal()) {
 
-                location.getAnimals().get(retrieveName()).remove(this);
-                setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (speed * 10)));
-                destination.getAnimals().get(retrieveName()).add(this);
+                location.getAnimals().get(getName()).remove(this);
+                setCurrentSatiety(getCurrentSatiety() - (getCurrentSatiety() / 100 * (animalSpeed * 10)));
+                destination.getAnimals().get(getName()).add(this);
             }
-
         } finally {
             location.getLock().unlock();
         }
@@ -111,38 +113,42 @@ public abstract class Animal implements Mortal {
 
         boolean coordinateDirection = Randomizer.flipCoin();
         int id = location.getId();
-        int speed = getSpeed();
+        int animalSpeed = getSpeed();
+
 
         List<Integer> locationsToGo = new ArrayList<>();
 
-            if (coordinateDirection) {
-                // X coordinate
-                int left = id - speed;
-                int right = id + speed;
+            while (locationsToGo.isEmpty()) {
+                if (coordinateDirection) {
+                    // X coordinate
+                    int leftDirection = id - animalSpeed;
+                    int rightDirection = id + animalSpeed;
 
-                //
-                if ((left > 0) && (location.getRow() == island.getLocationById(left).getRow())) {
-                    locationsToGo.add(left);
-                }
-                if ((right < ID_MAX_VALUE)&& (location.getRow() == island.getLocationById(right).getRow())) {
-                    locationsToGo.add(right);
-                }
-            } else {
-                // Y coordinate
-                int up = id - (speed * ISLAND_LENGTH);
-                int down = id + (speed * ISLAND_LENGTH);
+                    //
+                    if ((leftDirection > 0) && (location.getRow() == island.getLocationById(leftDirection).getRow())) {
+                        locationsToGo.add(leftDirection);
+                    }
+                    if ((rightDirection < ID_MAX_VALUE) && (location.getRow() == island.getLocationById(rightDirection).getRow())) {
+                        locationsToGo.add(rightDirection);
+                    }
+                } else {
+                    // Y coordinate
+                    int upDirection = id - (animalSpeed * ISLAND_LENGTH);
+                    int downDirection = id + (animalSpeed * ISLAND_LENGTH);
 
 
-                if (up > 0) {
-                    locationsToGo.add(up);
-                }
+                    if (upDirection > 0) {
+                        locationsToGo.add(upDirection);
+                    }
 
-                if (down < ID_MAX_VALUE) {
-                    locationsToGo.add(down);
+                    if (downDirection < ID_MAX_VALUE) {
+                        locationsToGo.add(downDirection);
+                    }
                 }
+                animalSpeed--;
             }
 
-        if (locationsToGo.size() == 1) {   //if size 0
+        if (locationsToGo.size() == 1) {
             return locationsToGo.get(0);
         } else {
             return locationsToGo.get(Randomizer.getRndNum(0, 2));

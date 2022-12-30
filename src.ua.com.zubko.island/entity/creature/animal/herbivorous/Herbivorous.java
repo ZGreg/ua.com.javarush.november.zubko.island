@@ -3,9 +3,6 @@ package entity.creature.animal.herbivorous;
 import entity.creature.animal.Animal;
 import entity.creature.plant.Plant;
 import entity.location.Location;
-import service.JsonAnimalHuntChanceReader;
-
-import java.util.Map;
 
 abstract public class Herbivorous extends Animal {
 
@@ -19,7 +16,7 @@ abstract public class Herbivorous extends Animal {
         safeEat(location);
     }
 
-    private void safeEat(Location location) {//throws exception if collection is empty
+    private void safeEat(Location location) {
         location.getLock().lock();
         try {
             while (isHungry() && location.getPlantsAmt() != 0) {

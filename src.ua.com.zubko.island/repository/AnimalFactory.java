@@ -3,13 +3,14 @@ package repository;
 import entity.creature.animal.Animal;
 import entity.creature.animal.herbivorous.*;
 import entity.creature.animal.predator.*;
+import exception.AnimalFactoryException;
 import util.AnimalSpecies;
 
-public class AnimalFabric {
+public class AnimalFactory {
 
-    private AnimalFabric() {
+    private AnimalFactory() {
     }
-    // add default error
+
     public static Animal createAnimal(AnimalSpecies species){
         Animal animal = null;
         switch (species){
@@ -28,7 +29,7 @@ public class AnimalFabric {
             case WILDBOAR -> animal = new WildBoar(400,50,2);
             case CATERPILLAR -> animal = new Caterpillar(0.01,0,0);
             case BOACONSTRICTOR -> animal = new BoaConstrictor(15,3,1);
-            default -> throw new RuntimeException();
+            default -> throw new AnimalFactoryException("Unknown animal type");
         }
         return animal;
     }

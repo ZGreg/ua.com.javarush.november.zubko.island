@@ -8,7 +8,7 @@ import util.Randomizer;
 
 import java.util.*;
 
-import static setings.WorldSettings.PLANT;
+import static entity.creature.plant.Plant.PLANT_STRING;
 
 public class Duck extends Herbivorous {
 
@@ -34,7 +34,7 @@ public class Duck extends Herbivorous {
                 String preyName = (String) huntChance.keySet().toArray()[0];
                 int attempt = Randomizer.getRndNum(2, 5);
 
-                if (preyName.equals(PLANT)) {   // constant
+                if (preyName.equals(PLANT_STRING)) {   // constant
                     while ((attempt >= 0) && (isHungry())) {
                         if (!(plants.isEmpty())) {
                             Plant eatenPlant = plants.remove();
@@ -83,7 +83,7 @@ public class Duck extends Herbivorous {
     }
 
     private Map<String, Integer> getRndPray() {
-        Map<String, Integer> huntChance = JsonAnimalHuntChanceReader.getHuntingChanceMap(retrieveName());
+        Map<String, Integer> huntChance = JsonAnimalHuntChanceReader.getHuntingChanceMap(getName());
 
         List<String> prayName = new ArrayList<>(huntChance.keySet());
         int rndNum = Randomizer.getRndNum(prayName.size());

@@ -1,10 +1,8 @@
 package service;
 
 import entity.creature.plant.Plant;
-import entity.location.Island;
 import entity.location.Location;
 
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
