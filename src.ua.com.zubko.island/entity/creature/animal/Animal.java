@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import static seting.WorldSettings.ID_MAX_VALUE;
-import static seting.WorldSettings.ISLAND_LENGTH;
-
 public abstract class Animal implements Mortal {
     @Getter
     private final double weight;
@@ -40,7 +37,7 @@ public abstract class Animal implements Mortal {
     }
 
     public boolean isHungry() {
-        return !(currentSatiety == satiety);
+        return currentSatiety != satiety;
     }
 
     public void killAnimal(Location location) {
@@ -121,6 +118,7 @@ public abstract class Animal implements Mortal {
         int animalSpeed = getSpeed();
 
 
+
         List<Integer> locationsToGo = new ArrayList<>();
 
         while (locationsToGo.isEmpty()) {
@@ -133,20 +131,21 @@ public abstract class Animal implements Mortal {
                 if ((leftDirection > 0) && (location.getRow() == island.getLocationById(leftDirection).getRow())) {
                     locationsToGo.add(leftDirection);
                 }
-                if ((rightDirection < ID_MAX_VALUE) && (location.getRow() == island.getLocationById(rightDirection).getRow())) {
+                if ((rightDirection < island.getLocationsAmt())
+                        && (location.getRow() == island.getLocationById(rightDirection).getRow())) {
                     locationsToGo.add(rightDirection);
                 }
             } else {
                 // Y coordinate
-                int upDirection = id - (animalSpeed * ISLAND_LENGTH);
-                int downDirection = id + (animalSpeed * ISLAND_LENGTH);
+                int upDirection = id - (animalSpeed * island.getIslandLength());
+                int downDirection = id + (animalSpeed * island.getIslandLength());
 
 
                 if (upDirection > 0) {
                     locationsToGo.add(upDirection);
                 }
 
-                if (downDirection < ID_MAX_VALUE) {
+                if (downDirection < island.getLocationsAmt()) {
                     locationsToGo.add(downDirection);
                 }
             }

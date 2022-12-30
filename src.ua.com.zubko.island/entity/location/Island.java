@@ -1,22 +1,23 @@
 package entity.location;
 
 
-
-
 import lombok.Getter;
-import seting.WorldSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static seting.WorldSettings.ISLAND_LENGTH;
-
 public class Island {
+    @Getter
+    private int islandLength;
+    @Getter
+    private int locationsAmt;
 
     @Getter
-    private final List<Location> locations = new ArrayList<>(WorldSettings.ID_MAX_VALUE);
+    private final List<Location> locations = new ArrayList<>(locationsAmt);
 
-    public Island() {
+    public Island(int islandLength, int locationsAmt) {
+        this.islandLength = islandLength;
+        this.locationsAmt = locationsAmt;
         initIsland();
     }
 
@@ -25,10 +26,10 @@ public class Island {
         int row = 1;
 
 
-        for (int i = 1; i < WorldSettings.ID_MAX_VALUE; i++) {
+        for (int i = 1; i < locationsAmt; i++) {
             locations.add(new Location(i, row));
 
-            if (counter == ISLAND_LENGTH) {
+            if (counter == islandLength) {
                 row++;
                 counter = 0;
             }

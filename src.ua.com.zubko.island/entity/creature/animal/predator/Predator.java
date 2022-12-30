@@ -5,6 +5,7 @@ import entity.location.Location;
 import service.JsonAnimalHuntChanceReader;
 import util.Randomizer;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 
@@ -60,7 +61,7 @@ abstract public class Predator extends Animal {
         return Math.min(newSatiety, hunter.getSatiety());
     }
 
-    private Map<String, Integer> getRndPray() {
+    private Map<String, Integer> getRndPray()  {
         Map<String, Integer> huntChance = JsonAnimalHuntChanceReader.getHuntingChanceMap(getName());
 
         List<String> prayName = new ArrayList<>(huntChance.keySet());

@@ -1,11 +1,8 @@
 package service;
 
 import entity.creature.animal.Animal;
-import entity.creature.plant.Plant;
 import entity.location.Island;
 import entity.location.Location;
-
-import java.util.Queue;
 
 public class AnimalTask {
 

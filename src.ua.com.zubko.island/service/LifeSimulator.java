@@ -11,12 +11,14 @@ import java.util.concurrent.TimeUnit;
 public class LifeSimulator {
 
     private final int coreSize = 4;
-    private final int worldDuration = 7000;
-    private final int period = 1000;
+    private final int worldDuration;
+    private final int periodOfAction;
 
     private final Island island;
 
-    public LifeSimulator(Island island) {
+    public LifeSimulator(Island island, int worldDuration, int periodOfAction) {
+        this.worldDuration = worldDuration;
+        this.periodOfAction =periodOfAction;
         this.island = island;
     }
 
@@ -47,8 +49,8 @@ public class LifeSimulator {
 
         List<Location> locations = island.getLocations();
         for (Location location : locations) {
-            animalService.scheduleWithFixedDelay(new AnimalRunner(island,location),period,period, TimeUnit.MICROSECONDS);
-            plantService.scheduleWithFixedDelay(new PlantRunner(location),period,period, TimeUnit.MICROSECONDS);
+            animalService.scheduleWithFixedDelay(new AnimalRunner(island,location),periodOfAction,periodOfAction, TimeUnit.MICROSECONDS);
+            plantService.scheduleWithFixedDelay(new PlantRunner(location),periodOfAction,periodOfAction, TimeUnit.MICROSECONDS);
         }
 
         statisticService.scheduleAtFixedRate(new StatisticRunner(island),0,1,TimeUnit.SECONDS);
